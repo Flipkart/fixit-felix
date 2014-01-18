@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>reveal.js - Barebones</title>
+
+		<meta name="author" content="Kashyap Paidimarri">
+		<link rel="stylesheet" href="reveal.js/css/reveal.min.css">
+		<link rel="stylesheet" href="reveal.js/css/theme/simple.css" id="theme">
+	</head>
+
+	<body>
+
+		<div class="reveal">
+		  <!-- --------------------------------------------------------- -->
+
+<div class="slides">
+<!-- ---------- SLIDE ---------- -->
+    <section>
+        <h1>Fixit Felix</h1>
+    <br />
+</h2>
+<h2>first in a box</h2>
+<h2>&amp;</h2>
+<h2>now in a slide</h2>
+<div class="fragment absolute-element" data-fragment-index="0" style="position: absolute; width: 560px; height: 559px; z-index: 4; left: 199px; top: 155px;">
+    <img src="https://s3.amazonaws.com/media-p.slid.es/uploads/kashyapp/images/57378/felix-stamp.jpg"/>
+        <br />
+        <font style="font-size: 18px;">
+            <span>Image from http://www.zazzle.com/</span>
+</font>
+</div>
+
+</section>
+<!-- ---------- SLIDE ---------- -->
+            <section>
+<h1>The Problems</h1>
+    </section>
+<!-- ---------- SLIDE ---------- -->
+    <section>
+        <section>
+            <h2>Boot</h2>
+<div>(/boot was full)</div>
+<p>
+<br />
+        <i>
+df</i> shows <i>/boot</i> is full<br />
+can't <i>rm</i> the file<br />
+but we can truncate it<br />
+and we do so<br />
+space is free
+    
+</p>
+</section>
+        <section>
+            <h2>But</h2>
+<div>
+    <br />
+</div>
+<div>is that the sufficient?</div>
+<div>we need to figure who created it</div>
+<div>will it come back?</div>
+<div>is that legit behaviour?</div>
+<div>
+    <br />
+</div>
+<div>
+            <i>lsof</i>
+        </div>
+<div>tells us some process still holding on to the file</div>
+<div>spawned from <i>init</i>
+</div>
+<div>so we have a handle to stop it</div>
+</section>
+    </section>
+<!-- ---------- SLIDE ---------- -->
+    <section>
+        <section>
+            <h2>Rescue</h2>
+<p>(Permission problem for Apache)</p>
+<h3> PART - 1 </h3>
+<div>intricacies of <i>cron</i> and <i>crontab</i>
+</div>
+<div>note about using only necessary privileges in crontab</div>
+    </section>
+    <section>
+        <h2>Rescue</h2>
+<div>
+<h3>PART - 2</h3>
+<div>had the cron been working</div>
+<div>we would have seen /var/www/rescue.png</div>
+</div>
+<div>
+<span>getting updated once a minute</span>
+        <br />
+</div>
+<div>
+        <br />
+        </div>
+<div>that gives us a hint</div>
+<div>
+<span>that some </span>
+        <i>scheduled </i>job is writing to it</div>
+<div>
+        <br />
+    </div>
+<div>
+<i>scheduled </i>often means <i>cron</i>
+</div>
+</section>
+<section>
+    <h2>Rescue</h2>
+<h3>PART - 3</h3>
+<div>we could have done a <i>chmod</i>
+</div>
+<div>but then again</div>
+<div>not necessarily the right thing to do</div>
+<div>
+<br />
+</div>
+<div>understand what <i>umask </i>does</div>
+<div>fix the root cause</div>
+</section>
+</section>
+<!-- ---------- SLIDE ---------- -->
+<section>
+    <section>
+        <h2>Ticket Server</h2>
+<p>(Mysql Slow Query)</p>
+<h3>PART - 1</h3>
+<div>Request times out</div>
+<div>Starting from port number <i>9292</i>
+</div>
+<div>work backwards using <i>lsof</i>
+</div>
+<div>
+    <i>
+    <br />
+</i>
+</div>
+<div>to find the <i>ruby</i>&nbsp;process</div>
+<div>running under the <i>flo </i>user</div>
+</section>
+<section>
+    <h2>Ticket Server</h2>
+<h3>PART - 2</h3>
+<div>to find the code</div>
+<div>
+<i>ps -f</i> gives a hint</div>
+<div>
+<i>/proc/pid/cwd</i>&nbsp;symlink is another strong hint</div>
+<div>
+<br />
+</div>
+<div>once you find the code</div>
+<div>you can look through it, find the query</div>
+<div>and the timeout</div>
+</section>
+<section>
+    <h2>Ticket Server</h2>
+<h3>PART - 3</h3>
+<div>We could ofcourse</div>
+<div>
+<i>increase the timeout</i>
+</div>
+<div>
+<i>
+<br />
+</i>
+</div>
+<div>But we'd be setting up ourselves for future failure</div>
+<div>
+<ul>
+<li>breach our sla with downstream services</li>
+<li>put the overall throughput of the system at risk</li>
+<li>not know what to do when the db has 10x rows</li>
+</ul>
+<div>
+<br />
+</div>
+</div>
+<div>Basically, we might not have fixed the root cause</div>
+<div>but only done a greedy fix of the immediate symptom</div>
+</section>
+<section>
+    <h2>Ticket Server</h2>
+<h3>PART - 4</h3>
+<div>
+<br />
+</div>
+<div>
+<i>/var/log/mysql/</i> has some logs</div>
+<div>
+<i>mysql-slow.log</i>
+</div>
+<div>
+<i>
+<br />
+</i>
+</div>
+<div>If you peek into it, you see the offending query</div>
+<div>but not much more</div>
+<div>
+<br />
+</div>
+<div>Next logical step:</div>
+<div>generate a <i>query plan</i>
+</div>
+<div>using <i>explain</i>
+</div>
+<div>
+<br />
+</div>
+</section>
+<section>
+    <h2>Ticket Server</h2>
+<h3>PART - 5</h3>
+<div>Understand the query plan</div>
+<div>See that<i> index </i>is not getting used</div>
+<div>
+<br />
+</div>
+<div>But there is an Index</div>
+<div>Ah, but it is a composite index</div>
+<div>
+<br />
+</div>
+<div>Understand what a composite index is</div>
+<div>(assuming you know what an index is)</div>
+<div>
+<br />
+</div>
+<div>So we now either</div>
+<div>modify this index and change the order</div>
+<div>or add a new index</div>
+<div>But again, not in haste!</div>
+<div>
+<br />
+</div>
+</section>
+<section>
+    <h2>Ticket Server</h2>
+<h3>
+<span>PART - 6</span>
+<br />
+</h3>
+<div>The composite index should have gotten used</div>
+<pre style="font-size: 24px; width: 60%;">    ORDER_ITEMS (
+        ORDER_ID,
+        PRODUCT_ID,
+        STATUS
+    )
+</pre>
+<div>
+    And our query used both <code>ORDER_ID</code> and <code>PRODUCT_ID</code>&nbsp;</div>
+<div>&nbsp;Turns out it is an insiduous bug.
+</div>
+<pre style="font-size: 24px; width: 60%;">    table: ORDER_ITEMS 
+    col:      ORDER_ID varchar(64)
+    
+    table: ORDER
+    col:      ID int(10)
+</pre>
+<div>
+    This is the real mistake.
+</div>
+
+
+
+
+</section>
+</section>
+<!-- ---------- SLIDE ---------- -->
+<section>
+    <section>
+        <h2>Anger Management</h2>
+<p>(The Thrift Error)</p>
+<div>
+<br />
+</div>
+<div>So you find the source</div>
+<div>but the error makes no sense</div>
+<div>
+    <br />
+</div>
+<div>Digging deeper and following the source trail</div>
+<div>Looks like it is expecting a <code>I32</code> field</div>
+<div>but is getting something else</div>
+</section>
+        <section>
+            <h2>Anger Management</h2>
+<div>
+    <br />
+</div>
+<div>The Thrift Server's source is not available</div>
+<div>so what now?</div>
+<div>
+    <br />
+</div>
+<h3>Options</h3>
+<div>
+    <ul>
+<li>
+            <span>Enable remote debugger and step through</span>
+            <br />
+</li>
+        <li>
+            <span>Use <i>tcpdump </i>or <i>ngrep</i>
+        </span>
+    </li>
+    <ul>
+<li>
+            <span>works well with <i>thrift</i>
+        </span>
+    </li>
+    <li>
+        <span>because of the protocol simplicity</span>
+    </li>
+</ul>
+</ul>
+<div>
+    <br />
+</div>
+</div>
+<div>Either ways, our hypothesis is confirmed</div>
+<div>We were expecting <code>I32</code>
+</div>
+<div>We get a <code>String</code> instead</div>
+<div>
+    <br />
+</div>
+</section>
+            <section>
+                <h2>Anger Management</h2>
+<div>
+                <br />
+            </div>
+<div>Someone made a mistake</div>
+<div>Changed the return type of the API</div>
+<div>and did not communicate</div>
+<div>and create a migration path</div>
+<div>
+            <br />
+            </div>
+<div>Maybe it would have been easier</div>
+<div>to simply ask the dev</div>
+<div>on the other end ;-)</div>
+        </section>
+    </section>
+<!-- ---------- SLIDE ---------- -->
+    <section>
+<h1>
+<span>The</span>
+</h1>
+<h1>
+<span>Takeaway</span>
+<br />
+</h1>
+</section>
+<!-- ---------- SLIDE ---------- -->
+<section>
+    <h2>Hygiene</h2>
+<div>
+    <br />
+</div>
+<div>
+        keep logs</div>
+<div>
+    <br />
+</div>
+<div>take notes</div>
+<div>
+<br />
+</div>
+<div>use checklists</div>
+<div>
+<br />
+</div>
+<div>reproduce the problem</div>
+<div>on a non-prod machine
+</div>
+</section>
+<!-- ---------- SLIDE ---------- -->
+<section>
+    <h2>Steps</h2>
+<span>
+    <div>
+        <span>
+            <br />
+        </span>
+    </div>problem isolation</span>
+<div>
+    <span>
+        <br />
+    </span>
+</div>
+<div>
+<span>forming hypotheses</span>
+</div>
+<div>
+<span>
+    <br />
+</span>
+</div>
+<div>
+<span>listing assumptions</span>
+</div>
+<div>
+<span>
+    <br />
+</span>
+</div>
+<div>
+<span>confirmation/validation</span>
+</div>
+<div>
+<span>
+    <br />
+</span>
+</div>
+<div>
+<span>reproduceability</span>
+</div>
+</section>
+<!-- ---------- SLIDE ---------- -->
+<section>
+    <section>
+        <h2>Awareness</h2>
+<div>
+        <br />
+    </div>
+<h3>Monitoring</h3>
+<div>host level monitoring</div>
+<div>(sar, iostat, vmstat)</div>
+<div>
+    <br />
+</div>
+<div>graphite</div>
+<div>
+<br />
+</div>
+<h3>--- do not work in the dark ---</h3>
+<div class="fragment absolute-element visible" style="position: absolute; width: 787px; z-index: 4; left: 75px; top: 337px; background-color: #fff;" data-fragment-index="0">
+  <div>
+	<blockquote>
+	<h3>But also remember the streetlight effect.</h3>
+	<a href="http://en.wikipedia.org/wiki/Streetlight_effect">//wikipedia.org/Streetlight_effect</a>
+  </blockquote>
+  </div>
+</div>
+<div>
+<br />
+</div>
+<div>Collect fine-grained metrics if needed</div>
+<div>for eg:</div>
+<div>
+<i>sadc</i>
+</div>
+<div>can be used to collect host metrics at a 1-sec granularity</div>
+</section>
+<section>
+    <h2>Awareness</h2>
+        <br />
+<h3>Dependencies<br />
+</h3>
+<div>Upstream and Downstream</div>
+<div>dependencies</div>
+<div>matter</div>
+<div>
+<br />
+</div>
+<div>Be it a</div>
+<div>bug or a performance problem</div>
+<div>
+<br />
+</div>
+</section>
+</section>
+<!-- ---------- SLIDE ---------- -->
+<section>
+    <h2>Credits</h2>
+<div>
+<br />
+</div>
+<div>Shashwat</div>
+<div>Vishwas</div>
+<div>Poornima</div>
+<div>Kashyap</div>
+<div>Kartik</div>
+<div>Sameer</div>
+<div>Pankaj</div>
+<div>JJ</div>
+<div>
+<br />
+</div>
+<div>Yogi</div>
+<div>
+<br />
+</div>
+<div>(I hope you've been hitting the down arrow also)</div>
+</section>
+</div>
+		  <!-- --------------------------------------------------------- -->
+		</div>
+
+		<script src="reveal.js/lib/js/head.min.js"></script>
+		<script src="reveal.js/js/reveal.min.js"></script>
+
+		<script>
+
+			Reveal.initialize();
+
+		</script>
+
+	</body>
+</html>

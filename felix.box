@@ -1,0 +1,3 @@
+We put it on ops-storage since github is not the place to put a 500mb file :)
+
+rsync://ops-storage/fk-storage/fixit-felix/felix.box

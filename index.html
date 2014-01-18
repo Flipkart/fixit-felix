@@ -1,0 +1,84 @@
+<html>
+<head>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+<style type='text/css'>
+* {
+font-family: 'Inconsolata', 'Consolas', 'Menlo', 'Courier New', Courier, monospace;
+font-size: 16px;
+}
+body {
+background: url('felix.jpg') right bottom no-repeat fixed;
+}
+h1 {
+font-size: 200%;
+}
+h2 {
+font-size: 150%;
+}
+.red {
+color: #f00;
+}
+</style>
+</head>
+<body>
+<h1>Fixit Felix</h1>
+<h2>The bootcamp session on troubleshooting</h2>
+<pre>
+Slides
+======
+<a href="slid.es/">Presentation Slides</a>
+
+Format
+======
+- Part A: <a href="hunt.html">Treasure hunt</a>
+- Part B: A War story from M.A.S.H
+<span class="red">
+Install beforehand
+==================
+Please install these before the session. Virtualbox is a large download.
+- <a href="installers/virtualbox/">Virtualbox</a>
+- <a href="installers/vagrant/">Vagrant</a>
+</span>
+The links above contain locally (in EA) saved copies for faster download.
+
+Goal
+====
+Hands-on workshop covering:
+- Tools for troubleshooting
+- Understand the thought process of troubleshooting
+  * problem isolation
+  * forming hypotheses
+  * confirmation
+  * reproduceability
+
+IRC Channel
+===========
+     <a href="http://git.corp.flipkart.com/flippy/channel/fixit">#fixit</a>
+
+Glossary of Tools
+=================
+- shell: 
+	* grep, sed, awk
+	* comm, pipes, xargs
+- Files: 
+	* lsof, find
+	* du, df
+- Mysql: 
+	* error logs, slow logs
+	* indexes, foreign keys
+	* binary log, mysqlbinlog
+- /proc filesystem
+- Process management: 
+	* cron
+	* init (sys v init), daemontools
+- Java: 
+	* garbage collection, jhat, jmap
+	* jconsole, jmx
+- Network: 
+	* ifconfig, lsof, netstat
+	* ngrep, tcpdump, wireshark
+	* ssh port forwarding
+- Monitoring: 
+	* top
+	* sar(sysstat), iostat, vmstat
+</pre>

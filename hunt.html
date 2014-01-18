@@ -1,0 +1,71 @@
+<html>
+<head>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+<style type='text/css'>
+* {
+font-family: 'Inconsolata', 'Consolas', 'Menlo', 'Courier New', Courier, monospace;
+font-size: 16px;
+}
+body {
+background: url('felix-2.jpg') right bottom no-repeat fixed;
+}
+h1 {
+font-size: 200%;
+}
+h2 {
+font-size: 150%;
+}
+.green {
+color: #0c0;
+}
+.red {
+color: #f00;
+}
+</style>
+</head>
+<body>
+<h1>The Hunt</h1>
+<pre>
+Init
+====
+- Download felix.box
+	* either over <a href=felix.box>http</a> (this will kill the wi-fi)
+	* or from one of the CDs or pendrives hopefully floating around the room.
+
+- At your shell:
+<span class="green">
+   $ vagrant box add felix /path/to/felix.box
+   $ mkdir $HOME/fixit-felix
+   $ cd $HOME/fixit-felix
+   $ vagrant init felix
+   $ vagrant up
+   $ vagrant status
+   $ vagrant ssh
+</span>
+- Pick a team name. Say `mongrel`.
+- Do join the irc channel #fixit.
+- You can look at the irc archive <a href="http://git.corp.flipkart.com/flippy/channel/fixit">here</a>
+
+Note
+====
+All of the commands from the glossary section of the previous page have been enabled via sudoers.
+So you should be able to do, for example
+<span class="green">
+   $ sudo netstat -ltpn
+</span>
+This would list all the listening TCP ports 
+
+LeaderBoard
+===========
+<a href="http://172.17.190.15:8080/secret/submit.htm">Submit your entry.</a>
+<a href="http://172.17.190.15:8080/leaderboard">Leaderboard</a>
+
+Goals
+=====
+Name     Description
+----     -----------
+Boot     - Disk on /boot seems to be at 100%, please fix that.
+Ticket   - Get a token from <a href="http://192.168.92.92:9292/tickets/index">here</a>
+Rescue   - Felix, please get me <a href="http://192.168.92.92/rescue.png">out of this</a>.
+Anger    - Why is <a href="http://192.168.92.92:8080/">this guy</a> so angry? 
+</pre>
